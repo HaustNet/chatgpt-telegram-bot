@@ -247,6 +247,11 @@ class OpenAIHelper:
                 except Exception as e:
                     logging.warning(f'Error while summarising chat history: {str(e)}. Popping elements instead...')
                     self.conversations[chat_id] = self.conversations[chat_id][-self.config['max_history_size']:]
+            # Add assistant_id to the conversation
+            assistant_id = self.config.get('assistant_id')
+            if assistant_id:
+                assistant_message = {"role": "system", "content": f"assistant_id:{assistant_id}"}
+                self.conversations[chat_id].insert(0, assistant_message)
 
             common_args = {
                 'model': self.config['model'] if not self.conversations_vision[chat_id] else self.config['vision_model'],
